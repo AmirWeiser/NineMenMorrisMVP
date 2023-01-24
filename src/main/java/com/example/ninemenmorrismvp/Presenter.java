@@ -73,6 +73,7 @@ public class Presenter implements Ipresenter{
                             break;
                         }
                     }
+                    //
                     else if (USER_TURN == AppConstants.WHITE && lastWhiteIndex != -1)
                     {
                         model.move(lastWhiteIndex, index, AppConstants.WHITE);
