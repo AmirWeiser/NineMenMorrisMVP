@@ -16,12 +16,17 @@ public class View implements Iview{
     @FXML
     private Label labelID;
 
+    @FXML
+    private Label modeLabel;
+
     public View()
     {
         this.presenter= new Presenter(this);
     }
     @Override
     public void displayMessage(String str) {labelID.setText(str);}
+
+    public void displayMode(String str){modeLabel.setText(str);}
 
     @Override
     public void setWhiteBackground(Button b) {b.setStyle("-fx-background-color: white;");}
@@ -84,12 +89,10 @@ public class View implements Iview{
     @FXML
     private Button btn9;
 
-
+    ArrayList<Button> buttons = new ArrayList<>();
     @FXML
     protected void onStartGameClick()
     {
-
-        ArrayList<Button> buttons = new ArrayList<>();
 
 
         buttons.add(btn1);
@@ -119,13 +122,13 @@ public class View implements Iview{
 
         for (Button b : buttons)
         {
+            displayMessage("Turn: White");
             b.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent)
                 {
                     String s = b.getId().replace("btn", "");
                     int index = Integer.valueOf(s) - 1;
-                    displayMessage("Turn: White");
                     presenter.userClick(b, index);
                 }
             });
@@ -136,7 +139,31 @@ public class View implements Iview{
     @FXML
     protected void newGame()
     {
-
+        presenter.newGame();
+        btn1.setStyle("");
+        btn2.setStyle("");
+        btn3.setStyle("");
+        btn4.setStyle("");
+        btn5.setStyle("");
+        btn6.setStyle("");
+        btn7.setStyle("");
+        btn8.setStyle("");
+        btn9.setStyle("");
+        btn10.setStyle("");
+        btn11.setStyle("");
+        btn12.setStyle("");
+        btn13.setStyle("");
+        btn14.setStyle("");
+        btn15.setStyle("");
+        btn16.setStyle("");
+        btn17.setStyle("");
+        btn18.setStyle("");
+        btn19.setStyle("");
+        btn20.setStyle("");
+        btn21.setStyle("");
+        btn22.setStyle("");
+        btn23.setStyle("");
+        btn24.setStyle("");
     }
 
     @FXML

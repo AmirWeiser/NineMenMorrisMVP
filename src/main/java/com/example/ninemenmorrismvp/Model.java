@@ -1,7 +1,6 @@
 package com.example.ninemenmorrismvp;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Model {
 
@@ -22,6 +21,7 @@ public class Model {
     public long mill = 0b111;
 
     public int flag = 0;
+    public int flag1 = 0;
     static int A1 = 1 << 0;
     static int D1 = 1 << 1;
     static int G1 = 1 << 2;
@@ -69,6 +69,88 @@ public class Model {
     HashMap<Integer, Integer> whiteMills = new HashMap<>();
     HashMap<Integer, Integer> blackMills = new HashMap<>();
 
+    HashMap<Integer, ArrayList<Integer>> Neighbors = new HashMap<>();
+
+
+    public void setNeighborsHashMap()
+    {
+        ArrayList<Integer>list0 = new ArrayList<>(Arrays.asList(1,9));
+        ArrayList<Integer>list1 = new ArrayList<>(Arrays.asList(0,2,4));
+        ArrayList<Integer>list2 = new ArrayList<>(Arrays.asList(1,14));
+        ArrayList<Integer>list3 = new ArrayList<>(Arrays.asList(4,10));
+        ArrayList<Integer>list4 = new ArrayList<>(Arrays.asList(1,3,5,7));
+        ArrayList<Integer>list5 = new ArrayList<>(Arrays.asList(4, 13));
+        ArrayList<Integer>list6 = new ArrayList<>(Arrays.asList(7,11));
+        ArrayList<Integer>list7 = new ArrayList<>(Arrays.asList(4,6,8));
+        ArrayList<Integer>list8 = new ArrayList<>(Arrays.asList(7,12));
+        ArrayList<Integer>list9 = new ArrayList<>(Arrays.asList(0,10,21));
+        ArrayList<Integer>list10 = new ArrayList<>(Arrays.asList(3,9,11,18));
+        ArrayList<Integer>list11 = new ArrayList<>(Arrays.asList(6,10,15));
+        ArrayList<Integer>list12 = new ArrayList<>(Arrays.asList(8,13,17));
+        ArrayList<Integer>list13 = new ArrayList<>(Arrays.asList(5,12,14,20));
+        ArrayList<Integer>list14 = new ArrayList<>(Arrays.asList(2,23,13));
+        ArrayList<Integer>list15 = new ArrayList<>(Arrays.asList(11, 16));
+        ArrayList<Integer>list16 = new ArrayList<>(Arrays.asList(15,17,19));
+        ArrayList<Integer>list17 = new ArrayList<>(Arrays.asList(12,16));
+        ArrayList<Integer>list18 = new ArrayList<>(Arrays.asList(10,19));
+        ArrayList<Integer>list19 = new ArrayList<>(Arrays.asList(16,18,20,22));
+        ArrayList<Integer>list20 = new ArrayList<>(Arrays.asList(13,19));
+        ArrayList<Integer>list21 = new ArrayList<>(Arrays.asList(9,22));
+        ArrayList<Integer>list22 = new ArrayList<>(Arrays.asList(19,21,23));
+        ArrayList<Integer>list23 = new ArrayList<>(Arrays.asList(14,22));
+
+        Neighbors.put(0, list0);
+        Neighbors.put(1, list1);
+        Neighbors.put(2, list2);
+        Neighbors.put(3, list3);
+        Neighbors.put(4, list4);
+        Neighbors.put(5, list5);
+        Neighbors.put(6, list6);
+        Neighbors.put(7, list7);
+        Neighbors.put(8, list8);
+        Neighbors.put(9, list9);
+        Neighbors.put(10, list10);
+        Neighbors.put(11, list11);
+        Neighbors.put(12, list12);
+        Neighbors.put(13, list13);
+        Neighbors.put(14, list14);
+        Neighbors.put(15, list15);
+        Neighbors.put(16, list16);
+        Neighbors.put(17, list17);
+        Neighbors.put(18, list18);
+        Neighbors.put(19, list19);
+        Neighbors.put(20, list20);
+        Neighbors.put(21, list21);
+        Neighbors.put(22, list22);
+        Neighbors.put(23, list23);
+
+
+    }
+
+    public boolean isNeighbor(int currIndex, int destIndex)
+    {
+        if (flag1 == 0)
+        {
+            setNeighborsHashMap();
+            flag1 = 1;
+        }
+
+        for (Map.Entry<Integer, ArrayList<Integer>> entry : this.Neighbors.entrySet())
+        {
+            if (entry.getKey() == currIndex)
+            {
+                for (int i = 0; i < entry.getValue().size(); i++)
+                {
+                    if (entry.getValue().get(i) == destIndex)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public void setWhiteMillList()
     {
         whiteMills.put(hor1, 0);
@@ -112,9 +194,9 @@ public class Model {
 
     public void setGameState()
     {
-        if(checkMill()) {gameState = GameState.MILL;}
+        if(checkWin()) gameState = GameState.PHRASE_THREE;
+        else if(checkMill()) {gameState = GameState.MILL;}
         else if (countWhitePieces == countWhitePiecesOnBoard && countBlackPieces == countBlackPiecesOnBoard) gameState = GameState.PHRASE_TWO;
-        else if(checkWin()) gameState = GameState.PHRASE_THREE;
         else gameState = GameState.PHRASE_ONE;
     }
 
@@ -182,29 +264,28 @@ public class Model {
         return false;
     }
 
-    public boolean checkIfAllEnemyPiecesOnMills(int color)
-    {
-        if (color == AppConstants.BLACK)
-        {
-            for (Map.Entry<Integer, Integer> entry : whiteMills.entrySet())
-            {
-                if ((whitePieces & entry.getKey()) != 0 && entry.getValue() != 1)
-                {
-                    return false;
-                }
-            }
-        }
-        else if(color == AppConstants.WHITE)
+
+    public boolean checkIfAllEnemyPiecesOnMills(int color) {
+        long onMill = 0L;
+        if(color == AppConstants.WHITE)
         {
             for (Map.Entry<Integer, Integer> entry : blackMills.entrySet())
             {
-                if ((blackPieces & entry.getKey()) != 0 && entry.getValue() != 1)
-                {
-                    return false;
+                if ((blackPieces & entry.getKey()) == entry.getKey()) {
+                    onMill |= entry.getKey();
                 }
             }
         }
-        return true;
+        else if(color == AppConstants.BLACK)
+        {
+            for (Map.Entry<Integer, Integer> entry : whiteMills.entrySet())
+            {
+                if ((whitePieces & entry.getKey()) == entry.getKey()) {
+                    onMill |= entry.getKey();
+                }
+            }
+        }
+        return onMill == blackPieces;
     }
 
 
@@ -223,8 +304,6 @@ public class Model {
             setBlackMillList();
             flag = 1;
         }
- //       if (color == AppConstants.BLACK)
-//       {
             for (Map.Entry<Integer, Integer> entry : blackMills.entrySet())
             {
                 if ((entry.getKey() & blackPieces) == entry.getKey() && entry.getValue() == 0)
@@ -233,9 +312,6 @@ public class Model {
                     return true;
                 }
             }
- //       }
- //       else if (color == AppConstants.WHITE)
- //       {
             for (Map.Entry<Integer, Integer> entry : whiteMills.entrySet())
             {
                 if ((entry.getKey() & whitePieces) == entry.getKey() && entry.getValue() == 0)
@@ -264,14 +340,14 @@ public class Model {
     {
         for (Map.Entry<Integer, Integer> entry : blackMills.entrySet())
         {
-            if ((entry.getKey() & blackPieces) != entry.getKey() && entry.getValue() == 1)
+            if (entry.getValue() == 1 && (entry.getKey() & blackPieces) != entry.getKey())
             {
                 entry.setValue(0);
             }
         }
         for (Map.Entry<Integer, Integer> entry : whiteMills.entrySet())
         {
-            if ((entry.getKey() & whitePieces) != entry.getKey() && entry.getValue() == 1)
+            if (entry.getValue() == 1 && (entry.getKey() & whitePieces) != entry.getKey())
             {
                 entry.setValue(0);
             }
@@ -296,6 +372,44 @@ public class Model {
         }
         return false;
     }
+
+    public void flying (int fromIndex, int toIndex, int color)
+    {
+        if (color == AppConstants.WHITE)
+        {
+            if (!isOccupied(toIndex))
+            {
+                displayPiece(toIndex, color);
+                remove(fromIndex, AppConstants.BLACK);
+            }
+        }
+        else if(color == AppConstants.BLACK)
+        {
+            if (!isOccupied(toIndex))
+            {
+                displayPiece(toIndex, color);
+                remove(fromIndex, AppConstants.WHITE);
+            }
+        }
+    }
+
+    public void restart()
+    {
+        this.whitePieces = 0b000000000000000000000000;
+        this.blackPieces = 0b000000000000000000000000;
+        this.flag = 0;
+        this.flag1 = 0;
+        this.countBlackPieces = 9;
+        this.countWhitePieces = 9;
+        this.countWhitePiecesOnBoard = 0;
+        this.countBlackPiecesOnBoard = 0;
+        this.gameState = GameState.PHRASE_ONE;
+        for (Map.Entry<Integer, Integer> entry : blackMills.entrySet())
+            entry.setValue(0);
+        for (Map.Entry<Integer, Integer> entry : whiteMills.entrySet())
+            entry.setValue(0);
+    }
+
 
 
 }

@@ -5,6 +5,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Border;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -28,31 +30,51 @@ public class Presenter implements Ipresenter{
         GameState state = model.gameState;
         switch (state)
         {
+            case PHRASE_THREE:
+            {
+                view.displayMode("");
+                view.displayMessage("Game Over!");
+                break;
+            }
 
             case PHRASE_ONE:
             {
-                model.displayPiece(index, USER_TURN);
-                if (USER_TURN == AppConstants.WHITE)
+                view.displayMode("Mode: Placing");
+                if (USER_TURN == AppConstants.WHITE && !model.isOccupied(index))
                 {
+                    model.displayPiece(index, USER_TURN);
                     view.setWhiteBackground(btn);
                     if (model.gameState == GameState.MILL)
                     {
-                        view.displayMessage("Remove black piece!");
-                        break;
+                        if(!model.checkIfAllEnemyPiecesOnMills(USER_TURN))
+                        {
+                            view.displayMessage("Remove black piece!");
+                            btn.setStyle("-fx-background-color: white; -fx-border-color: green; -fx-border-width: 2px;");
+                            btnTemp = btn;
+                            setEnemiesBorder(USER_TURN);
+                            break;
+                        }
+                        model.gameState = GameState.PHRASE_ONE;
                     }
-                    else
                         USER_TURN = AppConstants.BLACK;
                         view.displayMessage("Turn: Black");
                 }
-                else if (USER_TURN == AppConstants.BLACK)
+                else if (USER_TURN == AppConstants.BLACK && !model.isOccupied(index))
                 {
+                    model.displayPiece(index, USER_TURN);
                     view.setBlackBackground(btn);
                     if (model.gameState == GameState.MILL)
                     {
-                        view.displayMessage("Remove white piece!");
-                        break;
+                        if(!model.checkIfAllEnemyPiecesOnMills(USER_TURN))
+                        {
+                            view.displayMessage("Remove white piece!");
+                            btn.setStyle("-fx-background-color: black; -fx-border-color: green; -fx-border-width: 2px;");
+                            btnTemp = btn;
+                            setEnemiesBorder(USER_TURN);
+                            break;
+                        }
+                        model.gameState = GameState.PHRASE_ONE;
                     }
-                    else
                         USER_TURN = AppConstants.WHITE;
                         view.displayMessage("Turn: White");
                 }
@@ -61,6 +83,7 @@ public class Presenter implements Ipresenter{
             }
             case PHRASE_TWO:
             {
+                view.displayMode("Mode: Moving");
                 if (model.isOccupied(index) || lastWhiteIndex != -1 || lastBlackIndex != -1)
                 {
                     if (USER_TURN == AppConstants.WHITE && lastWhiteIndex == -1)
@@ -70,23 +93,34 @@ public class Presenter implements Ipresenter{
                             view.displayMessage("Move piece!");
                             lastWhiteIndex = index;
                             btnTemp = btn;
+                            btn.setStyle("-fx-background-color: white; -fx-border-color: green; -fx-border-width: 2px;");
                             break;
                         }
                     }
-                    //
                     else if (USER_TURN == AppConstants.WHITE && lastWhiteIndex != -1)
                     {
-                        model.move(lastWhiteIndex, index, AppConstants.WHITE);
-                        view.removeWhiteBackground(btnTemp);
-                        view.setWhiteBackground(btn);
-                        lastWhiteIndex = -1;
-                        if (model.gameState == GameState.MILL)
+                        if (btn.getStyle().equals(""))
                         {
-                            view.displayMessage("Remove black piece!");
-                            break;
+                             if(model.isNeighbor(lastWhiteIndex, index) || model.countWhitePieces == 3)
+                             {
+                                 model.move(lastWhiteIndex, index, AppConstants.WHITE);
+                                 view.removeWhiteBackground(btnTemp);
+                                 view.setWhiteBackground(btn);
+                                 lastWhiteIndex = -1;
+                                 if (model.gameState == GameState.MILL) {
+                                     if (!model.checkIfAllEnemyPiecesOnMills(USER_TURN)) {
+                                         view.displayMessage("Remove black piece!");
+                                         btn.setStyle("-fx-background-color: white; -fx-border-color: green; -fx-border-width: 2px;");
+                                         btnTemp = btn;
+                                         setEnemiesBorder(USER_TURN);
+                                         break;
+                                     }
+                                     model.gameState = GameState.PHRASE_TWO;
+                                 }
+                                 USER_TURN = AppConstants.BLACK;
+                                 view.displayMessage("Turn: Black");
+                             }
                         }
-                        USER_TURN = AppConstants.BLACK;
-                        view.displayMessage("Turn: Black");
                         break;
                     }
                     else if (USER_TURN == AppConstants.BLACK && lastBlackIndex == -1)
@@ -96,29 +130,37 @@ public class Presenter implements Ipresenter{
                             view.displayMessage("Move piece!");
                             lastBlackIndex = index;
                             btnTemp = btn;
+                            btn.setStyle("-fx-background-color: black; -fx-border-color: green; -fx-border-width: 2px;");
                             break;
                         }
                     }
                     else if (USER_TURN == AppConstants.BLACK && lastBlackIndex != -1)
                     {
-                        model.move(lastBlackIndex, index, AppConstants.BLACK);
-                        view.removeBlackBackground(btnTemp);
-                        view.setBlackBackground(btn);
-                        lastBlackIndex = -1;
-                        if (model.gameState == GameState.MILL)
+                        if (btn.getStyle().equals(""))
                         {
-                            view.displayMessage("Remove black piece!");
-                            break;
+                            if(model.isNeighbor(lastBlackIndex, index) || model.countBlackPieces == 3)
+                            {
+                                model.move(lastBlackIndex, index, AppConstants.BLACK);
+                                view.removeBlackBackground(btnTemp);
+                                view.setBlackBackground(btn);
+                                lastBlackIndex = -1;
+                                if (model.gameState == GameState.MILL) {
+                                    if (!model.checkIfAllEnemyPiecesOnMills(USER_TURN)) {
+                                        view.displayMessage("Remove white piece!");
+                                        btn.setStyle("-fx-background-color: black; -fx-border-color: green; -fx-border-width: 2px;");
+                                        btnTemp = btn;
+                                        setEnemiesBorder(USER_TURN);
+                                        break;
+                                    }
+                                    model.gameState = GameState.PHRASE_TWO;
+                                }
+                                USER_TURN = AppConstants.WHITE;
+                                view.displayMessage("Turn: White");
+                            }
                         }
-                        USER_TURN = AppConstants.WHITE;
-                        view.displayMessage("Turn: White");
                     }
                 }
                 break;
-            }
-            case PHRASE_THREE:
-            {
-
             }
 
             case MILL:
@@ -133,11 +175,17 @@ public class Presenter implements Ipresenter{
                             {
                                 model.remove(index, USER_TURN);
                                 view.removeBlackBackground(btn);
+                                removeEnemiesBorder(USER_TURN);
+                                btnTemp.setStyle("-fx-background-color: white;");
                                 USER_TURN = AppConstants.BLACK;
                                 view.displayMessage("Turn: Black");
                             }
                         }
-
+                        else
+                        {
+                            USER_TURN = AppConstants.BLACK;
+                            view.displayMessage("Turn: Black");
+                        }
                     }
                 }
                 else if (USER_TURN == AppConstants.BLACK)
@@ -149,9 +197,16 @@ public class Presenter implements Ipresenter{
                             if (!model.isPieceOnMill(index, USER_TURN)) {
                                 model.remove(index, USER_TURN);
                                 view.removeBlackBackground(btn);
+                                removeEnemiesBorder(USER_TURN);
+                                btnTemp.setStyle("-fx-background-color: black;");
                                 USER_TURN = AppConstants.WHITE;
                                 view.displayMessage("Turn: White");
                             }
+                        }
+                        else
+                        {
+                            USER_TURN = AppConstants.WHITE;
+                            view.displayMessage("Turn: White");
                         }
                     }
                 }
@@ -174,19 +229,77 @@ public class Presenter implements Ipresenter{
         System.out.println("count white pieces: " + model.countWhitePieces);
         System.out.println("count black pieces on board: " + model.countBlackPiecesOnBoard);
         System.out.println("count white pieces on board: " + model.countWhitePiecesOnBoard);
-//        System.out.println("isBlackMillLastTurn: " + this.isBlackMillLastTurn);
-//        System.out.println("isWhiteMillLastTurn: " + this.isWhiteMillLastTurn);
-//        System.out.println("white:");
-//        for (Map.Entry<Integer, Integer> entry : model.whiteMills.entrySet())
-//        {
-//            System.out.print(" key: " + Long.toBinaryString(entry.getKey()) + " value: " + entry.getValue() + ",");
-//        }
-//        System.out.println("black:");
-//        for (Map.Entry<Integer, Integer> entry : model.blackMills.entrySet())
-//        {
-//            System.out.print(" key: " + Long.toBinaryString(entry.getKey()) + " value: " + entry.getValue() + ",");
-//        }
-//        System.out.println("-----------------------------------------------------------");
-//        System.out.println("-----------------------------------------------------------");
     }
+
+    public void newGame()
+    {
+        model.restart();
+        view.displayMessage("New game! turn: white");
+        view.displayMode("Mode: Placing");
+        USER_TURN = AppConstants.WHITE;
+    }
+
+    public void setEnemiesBorder(int color)
+    {
+        for (int i = 0; i < view.buttons.size(); i++)
+        {
+            if (color == AppConstants.WHITE)
+            {
+                if (view.buttons.get(i).getStyle().equals("-fx-background-color: black;"))
+                {
+                    String s = view.buttons.get(i).getId().replace("btn", "");
+                    int index = Integer.valueOf(s) - 1;
+                    if (!model.isPieceOnMill(index, color))
+                    {
+                        view.buttons.get(i).setStyle("-fx-background-color: black; -fx-border-color: red; -fx-border-width: 2px;");
+                    }
+                }
+            }
+            else if(color == AppConstants.BLACK)
+            {
+                if (view.buttons.get(i).getStyle().equals("-fx-background-color: white;"))
+                {
+                    String s = view.buttons.get(i).getId().replace("btn", "");
+                    int index = Integer.valueOf(s) - 1;
+                    if (!model.isPieceOnMill(index, color))
+                    {
+                        view.buttons.get(i).setStyle("-fx-background-color: white; -fx-border-color: red; -fx-border-width: 2px;");
+                    }
+                }
+            }
+        }
+    }
+
+    public void removeEnemiesBorder(int color)
+    {
+
+        for (int i = 0; i < view.buttons.size(); i++)
+        {
+            if (color == AppConstants.WHITE)
+            {
+                if (view.buttons.get(i).getStyle().equals("-fx-background-color: black; -fx-border-color: red; -fx-border-width: 2px;"))
+                {
+                    String s = view.buttons.get(i).getId().replace("btn", "");
+                    int index = Integer.valueOf(s) - 1;
+                    if (!model.isPieceOnMill(index, color))
+                    {
+                        view.buttons.get(i).setStyle("-fx-background-color: black;");
+                    }
+                }
+            }
+            else if(color == AppConstants.BLACK)
+            {
+                if (view.buttons.get(i).getStyle().equals("-fx-background-color: white; -fx-border-color: red; -fx-border-width: 2px;"))
+                {
+                    String s = view.buttons.get(i).getId().replace("btn", "");
+                    int index = Integer.valueOf(s) - 1;
+                    if (!model.isPieceOnMill(index, color))
+                    {
+                        view.buttons.get(i).setStyle("-fx-background-color: white;");
+                    }
+                }
+            }
+        }
+    }
+
 }
