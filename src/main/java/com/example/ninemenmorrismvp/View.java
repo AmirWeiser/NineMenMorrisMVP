@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class View implements Iview{
@@ -90,6 +91,8 @@ public class View implements Iview{
     private Button btn9;
 
     ArrayList<Button> buttons = new ArrayList<>();
+    HashMap<Button, Integer> buttonIntegerHashMap = new HashMap<>();
+
     @FXML
     protected void onStartGameClick()
     {
@@ -119,6 +122,31 @@ public class View implements Iview{
         buttons.add(btn22);
         buttons.add(btn23);
         buttons.add(btn24);
+
+        buttonIntegerHashMap.put(btn1, 0);
+        buttonIntegerHashMap.put(btn2, 1);
+        buttonIntegerHashMap.put(btn3, 2);
+        buttonIntegerHashMap.put(btn4, 3);
+        buttonIntegerHashMap.put(btn5, 4);
+        buttonIntegerHashMap.put(btn6, 5);
+        buttonIntegerHashMap.put(btn7, 6);
+        buttonIntegerHashMap.put(btn8, 7);
+        buttonIntegerHashMap.put(btn9, 8);
+        buttonIntegerHashMap.put(btn10, 9);
+        buttonIntegerHashMap.put(btn11, 10);
+        buttonIntegerHashMap.put(btn12, 11);
+        buttonIntegerHashMap.put(btn13, 12);
+        buttonIntegerHashMap.put(btn14, 13);
+        buttonIntegerHashMap.put(btn15, 14);
+        buttonIntegerHashMap.put(btn16, 15);
+        buttonIntegerHashMap.put(btn17, 16);
+        buttonIntegerHashMap.put(btn18, 17);
+        buttonIntegerHashMap.put(btn19, 18);
+        buttonIntegerHashMap.put(btn20, 19);
+        buttonIntegerHashMap.put(btn21, 20);
+        buttonIntegerHashMap.put(btn22, 21);
+        buttonIntegerHashMap.put(btn23, 22);
+        buttonIntegerHashMap.put(btn24, 23);
 
         for (Button b : buttons)
         {
@@ -171,6 +199,14 @@ public class View implements Iview{
     {
         presenter.gameInformation();
     }
+
+
+    @FXML
+    protected void inAIClick()
+    {
+    //    presenter.AICLICK();
+    }
+
 
 
 }

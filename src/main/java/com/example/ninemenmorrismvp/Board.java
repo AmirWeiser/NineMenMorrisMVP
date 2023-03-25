@@ -2,7 +2,7 @@ package com.example.ninemenmorrismvp;
 
 import java.util.*;
 
-public class Model {
+public class Board {
 
     int countWhitePieces = 9;
     int countBlackPieces = 9;
@@ -69,7 +69,7 @@ public class Model {
     HashMap<Integer, Integer> whiteMills = new HashMap<>();
     HashMap<Integer, Integer> blackMills = new HashMap<>();
 
-    HashMap<Integer, ArrayList<Integer>> Neighbors = new HashMap<>();
+    public HashMap<Integer, ArrayList<Integer>> Neighbors = new HashMap<>();
 
 
     public void setNeighborsHashMap()
@@ -211,12 +211,12 @@ public class Model {
     {
         if (color == AppConstants.BLACK)
         {
-            blackPieces |= (1 << index);
+            this.blackPieces |= (1 << index);
             if(gameState == GameState.PHRASE_ONE) countBlackPiecesOnBoard++;
             setGameState();
             return;
         }
-        whitePieces |= (1 << index);
+        this.whitePieces |= (1 << index);
         if(gameState == GameState.PHRASE_ONE) countWhitePiecesOnBoard++;
         setGameState();
     }
@@ -225,14 +225,14 @@ public class Model {
     {
         if(color == AppConstants.WHITE)
         {
-            blackPieces ^= (1 << index);
+            this.blackPieces ^= (1 << index);
             if(gameState == GameState.MILL) countBlackPiecesOnBoard--;
             if(gameState == GameState.MILL) countBlackPieces--;
             setGameState();
             return;
         }
 
-        whitePieces ^= (1 << index);
+        this.whitePieces ^= (1 << index);
         if(gameState == GameState.MILL) countWhitePiecesOnBoard--;
         if(gameState == GameState.MILL) countWhitePieces--;
         setGameState();
@@ -271,7 +271,7 @@ public class Model {
         {
             for (Map.Entry<Integer, Integer> entry : blackMills.entrySet())
             {
-                if ((blackPieces & entry.getKey()) == entry.getKey()) {
+                if ((this.blackPieces & entry.getKey()) == entry.getKey()) {
                     onMill |= entry.getKey();
                 }
             }
@@ -280,19 +280,19 @@ public class Model {
         {
             for (Map.Entry<Integer, Integer> entry : whiteMills.entrySet())
             {
-                if ((whitePieces & entry.getKey()) == entry.getKey()) {
+                if ((this.whitePieces & entry.getKey()) == entry.getKey()) {
                     onMill |= entry.getKey();
                 }
             }
         }
-        return onMill == blackPieces;
+        return onMill == this.blackPieces;
     }
 
 
     public boolean isOccupied(int index)
     {
-        if ((whitePieces & (1 << index)) != 0) return true;
-        if ((blackPieces & (1 << index)) != 0) return true;
+        if ((this.whitePieces & (1 << index)) != 0) return true;
+        if ((this.blackPieces & (1 << index)) != 0) return true;
         return false;
     }
 
@@ -306,7 +306,7 @@ public class Model {
         }
             for (Map.Entry<Integer, Integer> entry : blackMills.entrySet())
             {
-                if ((entry.getKey() & blackPieces) == entry.getKey() && entry.getValue() == 0)
+                if ((entry.getKey() & this.blackPieces) == entry.getKey() && entry.getValue() == 0)
                 {
                     entry.setValue(1);
                     return true;
@@ -314,13 +314,45 @@ public class Model {
             }
             for (Map.Entry<Integer, Integer> entry : whiteMills.entrySet())
             {
-                if ((entry.getKey() & whitePieces) == entry.getKey() && entry.getValue() == 0)
+                if ((entry.getKey() & this.whitePieces) == entry.getKey() && entry.getValue() == 0)
                 {
                     entry.setValue(1);
                     return true;
                 }
             }
  //       }
+        return false;
+    }
+
+    public boolean checkMillAI(int index)
+    {
+        Long blackTempBoard = this.blackPieces;
+        blackTempBoard |= (1 << index);
+
+        for (Map.Entry<Integer, Integer> entry : blackMills.entrySet())
+        {
+            if ((entry.getKey() & blackTempBoard) == entry.getKey())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isBlockMillPossible(int index)
+    {
+        Long whiteTempBoard = this.whitePieces;
+        whiteTempBoard |= (1 << index);
+
+        for (Map.Entry<Integer, Integer> entry : whiteMills.entrySet())
+        {
+            if ((entry.getKey() & whiteTempBoard) == entry.getKey())
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -340,14 +372,14 @@ public class Model {
     {
         for (Map.Entry<Integer, Integer> entry : blackMills.entrySet())
         {
-            if (entry.getValue() == 1 && (entry.getKey() & blackPieces) != entry.getKey())
+            if (entry.getValue() == 1 && (entry.getKey() & this.blackPieces) != entry.getKey())
             {
                 entry.setValue(0);
             }
         }
         for (Map.Entry<Integer, Integer> entry : whiteMills.entrySet())
         {
-            if (entry.getValue() == 1 && (entry.getKey() & whitePieces) != entry.getKey())
+            if (entry.getValue() == 1 && (entry.getKey() & this.whitePieces) != entry.getKey())
             {
                 entry.setValue(0);
             }
@@ -358,14 +390,14 @@ public class Model {
     {
         if (color == AppConstants.WHITE)
         {
-            if (isOccupied(index) && !(((1<<index) & whitePieces) != 0))
+            if (isOccupied(index) && !(((1<<index) & this.whitePieces) != 0))
             {
                 return true;
             }
         }
         else if (color == AppConstants.BLACK)
         {
-            if (isOccupied(index) && !(((1<<index) & blackPieces) != 0))
+            if (isOccupied(index) && !(((1<<index) & this.blackPieces) != 0))
             {
                 return true;
             }

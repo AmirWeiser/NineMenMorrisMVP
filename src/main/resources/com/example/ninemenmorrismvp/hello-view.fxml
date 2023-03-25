@@ -79,7 +79,7 @@
                 <Font name="Bodoni MT Bold Italic" size="15.0" />
             </font>
         </Button>
-        <Button layoutX="589.0" layoutY="576.0" mnemonicParsing="false" onAction="#gameInformation" text="Game Information" />
+        <Button layoutX="589.0" layoutY="576.0" mnemonicParsing="false" onAction="#gameInformation" text="AI" />
       <Label fx:id="modeLabel" layoutX="423.0" layoutY="630.0" prefHeight="78.0" prefWidth="332.0">
          <font>
             <Font size="40.0" />
