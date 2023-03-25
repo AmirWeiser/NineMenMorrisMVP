@@ -29,10 +29,10 @@ public class AIModel {
             for (int i = 0; i < 23; i++)
             {
                 attempts = 0;
-                int index = random.nextInt(23) + 1;
+                int index = random.nextInt(23);
                 while (usedNumbers.contains(index))
                 {
-                    index = random.nextInt(23) + 1;
+                    index = random.nextInt(23);
                     attempts++;
                     if (attempts >= 50) break;
                 }
@@ -52,7 +52,7 @@ public class AIModel {
     public int fillMillOrBlockMill()
     {
         int bestSpot = -1;
-        int attempts = 0;
+        int attempts;
 
         List<Integer> usedNumbers = new ArrayList<>();
         Random random = new Random();
@@ -60,11 +60,11 @@ public class AIModel {
         // Apply the first rule: Place pieces to create mills
         for (int i = 0; i < 23; i++)
         {
-            int index = random.nextInt(23) + 1;
+            int index = random.nextInt(23);
             attempts = 0;
             while (usedNumbers.contains(index))
             {
-                index = random.nextInt(23) + 1;
+                index = random.nextInt(23);
                 attempts++;
                 if (attempts >= 50) break;
             }
@@ -72,25 +72,26 @@ public class AIModel {
             {
                 if (this.board.checkMillAI(index))
                 {
-                    System.out.println("1111111");
+                    System.out.println("happen");
                     bestSpot = index;
                     break;
                 }
             }
             usedNumbers.add(index);
         }
+        System.out.println("============================================");
         System.out.println("after first rule, best spot is: " + bestSpot);
         if (bestSpot != -1) return bestSpot;
-
+        usedNumbers.clear();
 
         // Apply the second rule: Block enemies pieces from creating mills
         for (int i = 0; i < 23; i++)
         {
-            int index = random.nextInt(23) + 1;
+            int index = random.nextInt(23);
             attempts = 0;
             while (usedNumbers.contains(index))
             {
-                index = random.nextInt(23) + 1;
+                index = random.nextInt(23);
                 attempts++;
                 if (attempts >= 50) break;
             }
@@ -106,24 +107,32 @@ public class AIModel {
         }
         System.out.println("after second rule, best spot is: " + bestSpot);
         if (bestSpot != -1) return bestSpot;
+        usedNumbers.clear();
+
 
         // Apply the third rule: Place pieces next to your own pieces
         for (int i = 0; i < 23; i++)
         {
-            int index = random.nextInt(23) + 1;
+            int index = random.nextInt(23);
             attempts = 0;
             while (usedNumbers.contains(index))
             {
-                index = random.nextInt(23) + 1;
+                index = random.nextInt(23);
                 attempts++;
                 if (attempts >= 50) break;
             }
-            if (!this.board.isOccupied(index))
+            if ((this.board.blackPieces & (1 << index)) != 0)
             {
-                if ((this.board.blackPieces & (index<<1)) != 0)
+                for (int j = 0; j < 23; j++)
                 {
-                    bestSpot = index;
-                    break;
+                    if (!this.board.isOccupied(j))
+                    {
+                        if (this.board.isNeighbor(index, j))
+                        {
+                            bestSpot = j;
+                            break;
+                        }
+                    }
                 }
             }
             usedNumbers.add(index);
@@ -142,10 +151,10 @@ public class AIModel {
 
         for (int i = 0; i < 23; i++)
         {
-            int index = random.nextInt(23) + 1;
+            int index = random.nextInt(23);
             while (usedNumbers.contains(index))
             {
-                index = random.nextInt(23) + 1;
+                index = random.nextInt(23);
             }
             if (((1 << index) | this.board.whitePieces) == this.board.whitePieces && !this.board.isPieceOnMill(index, AppConstants.BLACK))
             {
@@ -155,13 +164,25 @@ public class AIModel {
             usedNumbers.add(index);
         }
         return bestSpot;
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     public int[] getBestSpotPhraseTwo(View view)
     {
         int [] arr = new int[2];
         Random random = new Random();
-        int index1 = random.nextInt(23) + 1;
+        int index1 = random.nextInt(23);
         outerloop:
         for (int index = 0; index < 100; index++)
         {
@@ -188,7 +209,7 @@ public class AIModel {
                         }
                     }
                 }
-                index1 = random.nextInt(23) + 1;
+                index1 = random.nextInt(23);
             }
 
         }

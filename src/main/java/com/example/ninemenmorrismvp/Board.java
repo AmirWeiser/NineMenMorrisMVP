@@ -326,12 +326,13 @@ public class Board {
 
     public boolean checkMillAI(int index)
     {
+
         Long blackTempBoard = this.blackPieces;
         blackTempBoard |= (1 << index);
 
         for (Map.Entry<Integer, Integer> entry : blackMills.entrySet())
         {
-            if ((entry.getKey() & blackTempBoard) == entry.getKey())
+            if ((entry.getKey() & blackTempBoard) == entry.getKey() && entry.getValue() == 0)
             {
                 return true;
             }
