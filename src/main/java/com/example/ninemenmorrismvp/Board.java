@@ -1,5 +1,7 @@
 package com.example.ninemenmorrismvp;
 
+import javafx.scene.control.Button;
+
 import java.util.*;
 
 public class Board {
@@ -66,11 +68,88 @@ public class Board {
     static int ver5 = E3 | E4 | E5;
     static int ver6 = F2 | F4 | F6;
     static int ver7 = G1 | G4 | G7;
-    HashMap<Integer, Integer> whiteMills = new HashMap<>();
-    HashMap<Integer, Integer> blackMills = new HashMap<>();
+    HashMap<Integer, Integer> whiteMills = new LinkedHashMap<>();
+    HashMap<Integer, Integer> blackMills = new LinkedHashMap<>();
 
-    public HashMap<Integer, ArrayList<Integer>> Neighbors = new HashMap<>();
+    public HashMap<Integer, ArrayList<Integer>> Neighbors = new LinkedHashMap<>();
 
+
+    public HashMap<Integer,Integer> connectedMiddles = new LinkedHashMap<>();
+
+
+    public void setConnectedMiddlesHashMap()
+    {
+        connectedMiddles.put(1,9);
+        connectedMiddles.put(1,14);
+        connectedMiddles.put(9,22);
+        connectedMiddles.put(22,14);
+        connectedMiddles.put(4,10);
+        connectedMiddles.put(4,13);
+        connectedMiddles.put(10,19);
+        connectedMiddles.put(19,13);
+        connectedMiddles.put(7,11);
+        connectedMiddles.put(7,12);
+        connectedMiddles.put(11,16);
+        connectedMiddles.put(16,12);
+    }
+
+
+//    public HashMap<Integer, ArrayList<Integer>> doubleMillOptions = new HashMap<>();
+//
+//    public void setdoubleMillOptionsHashMap()
+//    {
+//        ArrayList<Integer>list0 = new ArrayList<>(Arrays.asList(1,9));
+//        ArrayList<Integer>list1 = new ArrayList<>(Arrays.asList(0,2,4));
+//        ArrayList<Integer>list2 = new ArrayList<>(Arrays.asList(1,14));
+//        ArrayList<Integer>list3 = new ArrayList<>(Arrays.asList(4,10));
+//        ArrayList<Integer>list4 = new ArrayList<>(Arrays.asList(1,3,5,7));
+//        ArrayList<Integer>list5 = new ArrayList<>(Arrays.asList(4, 13));
+//        ArrayList<Integer>list6 = new ArrayList<>(Arrays.asList(7,11));
+//        ArrayList<Integer>list7 = new ArrayList<>(Arrays.asList(4,6,8));
+//        ArrayList<Integer>list8 = new ArrayList<>(Arrays.asList(7,12));
+//        ArrayList<Integer>list9 = new ArrayList<>(Arrays.asList(0,10,21));
+//        ArrayList<Integer>list10 = new ArrayList<>(Arrays.asList(3,9,11,18));
+//        ArrayList<Integer>list11 = new ArrayList<>(Arrays.asList(6,10,15));
+//        ArrayList<Integer>list12 = new ArrayList<>(Arrays.asList(8,13,17));
+//        ArrayList<Integer>list13 = new ArrayList<>(Arrays.asList(5,12,14,20));
+//        ArrayList<Integer>list14 = new ArrayList<>(Arrays.asList(2,23,13));
+//        ArrayList<Integer>list15 = new ArrayList<>(Arrays.asList(11, 16));
+//        ArrayList<Integer>list16 = new ArrayList<>(Arrays.asList(15,17,19));
+//        ArrayList<Integer>list17 = new ArrayList<>(Arrays.asList(12,16));
+//        ArrayList<Integer>list18 = new ArrayList<>(Arrays.asList(10,19));
+//        ArrayList<Integer>list19 = new ArrayList<>(Arrays.asList(16,18,20,22));
+//        ArrayList<Integer>list20 = new ArrayList<>(Arrays.asList(13,19));
+//        ArrayList<Integer>list21 = new ArrayList<>(Arrays.asList(9,22));
+//        ArrayList<Integer>list22 = new ArrayList<>(Arrays.asList(19,21,23));
+//        ArrayList<Integer>list23 = new ArrayList<>(Arrays.asList(14,22));
+//
+//        Neighbors.put(0, list0);
+//        Neighbors.put(1, list1);
+//        Neighbors.put(2, list2);
+//        Neighbors.put(3, list3);
+//        Neighbors.put(4, list4);
+//        Neighbors.put(5, list5);
+//        Neighbors.put(6, list6);
+//        Neighbors.put(7, list7);
+//        Neighbors.put(8, list8);
+//        Neighbors.put(9, list9);
+//        Neighbors.put(10, list10);
+//        Neighbors.put(11, list11);
+//        Neighbors.put(12, list12);
+//        Neighbors.put(13, list13);
+//        Neighbors.put(14, list14);
+//        Neighbors.put(15, list15);
+//        Neighbors.put(16, list16);
+//        Neighbors.put(17, list17);
+//        Neighbors.put(18, list18);
+//        Neighbors.put(19, list19);
+//        Neighbors.put(20, list20);
+//        Neighbors.put(21, list21);
+//        Neighbors.put(22, list22);
+//        Neighbors.put(23, list23);
+//
+//
+//    }
 
     public void setNeighborsHashMap()
     {
@@ -341,6 +420,8 @@ public class Board {
         return false;
     }
 
+
+
     public boolean isBlockMillPossible(int index)
     {
         Long whiteTempBoard = this.whitePieces;
@@ -348,7 +429,7 @@ public class Board {
 
         for (Map.Entry<Integer, Integer> entry : whiteMills.entrySet())
         {
-            if ((entry.getKey() & whiteTempBoard) == entry.getKey())
+            if (((entry.getKey() & (1 << index)) != 0) && (entry.getKey() & whiteTempBoard) == entry.getKey())
             {
                 return true;
             }

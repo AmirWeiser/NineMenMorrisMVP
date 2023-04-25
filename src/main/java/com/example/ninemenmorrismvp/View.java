@@ -208,5 +208,29 @@ public class View implements Iview{
     }
 
 
+    public boolean isBlack(int index)
+    {
+        for (Map.Entry<Button, Integer> entry : this.buttonIntegerHashMap.entrySet())
+        {
+            if (entry.getValue() == index)
+            {
+                if (entry.getKey().getStyle().equals("-fx-background-color: black;")) return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isWhite(int index)
+    {
+        for (Map.Entry<Button, Integer> entry : this.buttonIntegerHashMap.entrySet())
+        {
+            if (entry.getValue() == index)
+            {
+                if (entry.getKey().getStyle().equals("-fx-background-color: white;")) return true;
+            }
+        }
+        return false;
+    }
+
 
 }

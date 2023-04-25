@@ -7,9 +7,14 @@ import java.util.Map;
 public class Presenter implements Ipresenter{
 
     Board board = new Board();
+    View view;
+    AIModel AImodel;
 
-    View view ;
-    AIModel AImodel = new AIModel(board);
+    public Presenter(View view) {
+        this.view = view;
+        this.AImodel = new AIModel(board, view);
+    }
+
     private int USER_TURN = AppConstants.WHITE;
 
     int lastWhiteIndex = -1;
@@ -17,10 +22,7 @@ public class Presenter implements Ipresenter{
     Button btnTemp;
 
     boolean isAI = false;
-    public  Presenter(View view)
-    {
-        this.view=view;
-    }
+
     public void userClick(Button btn, int index)
     {
         GameState state = board.gameState;
@@ -259,8 +261,8 @@ public class Presenter implements Ipresenter{
 
     public void handleAIPhraseOne()
     {
-        int AIindex = AImodel.getBestSpotPhraseOne();
-        //System.out.println("AIindex is: " + AIindex);
+        int AIindex = AImodel.HEURISTIC_FUNCTION();
+        System.out.println("AIindex is: " + AIindex);
         board.displayPiece(AIindex, AppConstants.BLACK);
         for (Map.Entry<Button, Integer> entry : view.buttonIntegerHashMap.entrySet())
         {
@@ -274,7 +276,7 @@ public class Presenter implements Ipresenter{
     public void handleAIPhraseTwo()
     {
         int arr [];
-        arr = AImodel.getBestSpotPhraseTwo(view);
+        arr = AImodel.getBestSpotPhraseTwo_HEURISTIC_FUNCTION();
         int fromAIindex = arr[0];
         int toAIindex = arr[1];
         System.out.println("fromAIindex is: " + fromAIindex);
@@ -295,7 +297,7 @@ public class Presenter implements Ipresenter{
 
     public void handleAIMill()
     {
-        int AIindex = AImodel.getBestRemoveOption();
+        int AIindex = AImodel.getBestRemoveOption_HEURISTIC_FUNCTION();
         board.remove(AIindex, AppConstants.BLACK);
         for (Map.Entry<Button, Integer> entry : view.buttonIntegerHashMap.entrySet())
         {
@@ -392,5 +394,7 @@ public class Presenter implements Ipresenter{
             }
         }
     }
+
+
 
 }
