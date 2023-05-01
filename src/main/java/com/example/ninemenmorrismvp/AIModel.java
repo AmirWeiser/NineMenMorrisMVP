@@ -123,6 +123,10 @@ public class AIModel {
 //        return bestSpot;
 //    }
 
+    /**
+     * Chooses the index of a button to be removed if it is legal
+     * @return the index of the button
+     */
     public int getBestRemoveOption() {
         int bestSpot = -1;
         Random random = new Random();
@@ -144,6 +148,10 @@ public class AIModel {
 
     }
 
+    /**
+     * Iterating thorough all the possible delete moves and checking which move has the best potential for winning the game
+     * @return the index if the piece to delete
+     */
     public int HEURISTIC_FUNCTION_DELETE()
     {
         int bestSpot = -1, maxEvaluation = 0;
@@ -157,7 +165,7 @@ public class AIModel {
             possibleRemovesEvaluation.put(key, value);
         }
 
-        for (Map.Entry<Integer, Integer> entry : possibleRemovesEvaluation.entrySet()) entry.setValue(isHasNeighbor(entry.getKey()));
+        for (Map.Entry<Integer, Integer> entry : possibleRemovesEvaluation.entrySet()) entry.setValue(countWhiteNeighbors(entry.getKey()));
         for (Map.Entry<Integer, Integer> entry : possibleRemovesEvaluation.entrySet())
         {
             if (entry.getValue() > maxEvaluation)
@@ -171,32 +179,57 @@ public class AIModel {
         return bestSpot;
     }
 
-
-    public int isHasNeighbor(int index)
+    /**
+     * counts the neighbors of the specific index
+     * @param index the index of the piece
+     * @return the number of neighbors
+     */
+    public int countWhiteNeighbors(int index)
     {
-
-            if (this.view.isWhite(index))
+        int count = 0;
+        for (Map.Entry<Integer, ArrayList<Integer>> entry : this.board.Neighbors.entrySet())
+        {
+            if (entry.getKey() == index)
             {
-                for (Map.Entry<Integer, ArrayList<Integer>> entry : this.board.Neighbors.entrySet())
+                for (int i = 0; i < entry.getValue().size(); i++)
                 {
-                    if (entry.getKey() == index)
-                    {
-                        for (int j = 0; j < entry.getValue().size(); j++)
-                        {
-                            if (this.view.isWhite(entry.getValue().get(j))) return 2;
-                        }
-                        break;
-                    }
+                    if (this.view.isWhite(entry.getValue().get(i))) count++;
                 }
             }
-
-        return 0;
+        }
+        return count;
     }
 
 
+//    public int isHasNeighbor(int index)
+//    {
+//
+//            if (this.view.isWhite(index))
+//            {
+//                for (Map.Entry<Integer, ArrayList<Integer>> entry : this.board.Neighbors.entrySet())
+//                {
+//                    if (entry.getKey() == index)
+//                    {
+//                        for (int j = 0; j < entry.getValue().size(); j++)
+//                        {
+//                            if (this.view.isWhite(entry.getValue().get(j))) return 2;
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//
+//        return 0;
+//    }
 
 
 
+
+
+    /**
+     * Iterating thorough all the possible Moving moves and checking which move has the best potential for winning the game
+     * @return an Integer array, the first element is the piece to move, the second element is the destination button.
+     */
     public int[] HEURISTIC_FUNCTION_PHRASE_TWO()
     {
         int[] bestMoves = new int[2];
@@ -239,6 +272,10 @@ public class AIModel {
     }
 
 
+    /**
+     * Iterating thorough all the possible displaying moves and checking which move has the best potential for winning the game
+     * @return the index of the best move.
+     */
     public int HEURISTIC_FUNCTION_PHRASE_ONE()
     {
         int bestSpot = -1, maxEvaluation = -5;
@@ -305,6 +342,11 @@ public class AIModel {
 //        return count;
 //    }
 
+    /**
+     * checks if the index is on an active mill
+     * @param index index of the button
+     * @return heuristic evaluation
+     */
     public int isMillActive(int index)
     {
         for (Map.Entry<Integer, Integer> entry : this.board.blackMills.entrySet())
@@ -329,6 +371,11 @@ public class AIModel {
         return 0;
     }
 
+    /**
+     * checks if by displaying the piece, it creates a mill
+     * @param index index of the button
+     * @return heuristic evaluation
+     */
     public int isPotentialMillFormation (int index)
     {
         if (!this.board.isOccupied(index))
@@ -341,6 +388,11 @@ public class AIModel {
         return 0;
     }
 
+    /**
+     * checks if by displaying the piece, it clocks white mill
+     * @param index index of the button
+     * @return heuristic evaluation
+     */
     public int isBlockMillPossible(int index)
     {
         if (!this.board.isOccupied(index))
@@ -353,6 +405,11 @@ public class AIModel {
         return 0;
     }
 
+    /**
+     * checks if a piece has a black neighbor and that the black neighbor has a free neighbor, so that it could be a potential mill formation
+     * @param index index of the button
+     * @return heuristic evaluation
+     */
     public int isPieceNeighborAndMillNotOccupied(int index)
     {
         if (isPieceNeighbor(index) == 1)
@@ -402,6 +459,11 @@ public class AIModel {
         return 0;
     }
 
+    /**
+     * checks if by displaying the piece, it blocks two connected middle mills.
+     * @param index index of the button
+     * @return heuristic evaluation
+     */
     public int isBlockMiddleMillsPiece(int index)
     {
         for (Map.Entry<Integer, ArrayList<Integer>> entry : this.board.Neighbors.entrySet())
@@ -418,6 +480,11 @@ public class AIModel {
         return 0;
     }
 
+    /**
+     * checks if an index, is the connected spot between two middle mills
+     * @param index index of the button
+     * @return heuristic evaluation
+     */
     public int isBetweenConnectedMiils(int index)
     {
         for (Map.Entry<Integer, ArrayList<Integer>> entry : this.board.Neighbors.entrySet())
@@ -437,6 +504,11 @@ public class AIModel {
         return 0;
     }
 
+    /**
+     * checks if an index is a middle mill, and its opposite middle mill is occupied by a black piece
+     * @param index index of the button
+     * @return heuristic evaluation
+     */
     public int connectedMiddles(int index)
     {
         this.board.setConnectedMiddlesHashMap();
@@ -449,6 +521,11 @@ public class AIModel {
     }
 
 
+    /**
+     * checks if a piece is a neighbor of a black piece
+     * @param index index of the button
+     * @return heuristic evaluation
+     */
     public int isPieceNeighbor(int index)
     {
         for (int i = 0; i < 24; i++)
@@ -464,6 +541,9 @@ public class AIModel {
         return 0;
     }
 
+    /**
+     * @return return all possible spots that are not occupied
+     */
     public List<Integer>getAllPossibleMoves()
     {
         List<Integer>possibleMoves = new ArrayList<>();
@@ -477,6 +557,9 @@ public class AIModel {
         return possibleMoves;
     }
 
+    /**
+     * @return return all possible spots that are legal to be deleted
+     */
     public List<Integer> getAllPossibleRemoveMoves()
     {
         List<Integer>possibleRemoves = new ArrayList<>();
@@ -490,6 +573,9 @@ public class AIModel {
         return possibleRemoves;
     }
 
+    /**
+     * @return return all possible spots that are legal to be moved
+     */
     public HashMap<Integer, Integer> getAllPossibleMoving()
     {
         HashMap<Integer, Integer>possibleRemoves = new LinkedHashMap<>();

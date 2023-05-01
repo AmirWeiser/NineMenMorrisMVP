@@ -94,8 +94,12 @@ public class View implements Iview{
     HashMap<Button, Integer> buttonIntegerHashMap = new HashMap<>();
 
     @FXML
+    /**
+     Initializes the game buttons and calls the userClick function that is responsible for the progress of the game
+     //     */
     protected void onStartGameClick()
     {
+
 
 
         buttons.add(btn1);
@@ -165,6 +169,9 @@ public class View implements Iview{
 
 
     @FXML
+    /**
+     * restarts the buttons
+     */
     protected void newGame()
     {
         presenter.newGame();
@@ -195,19 +202,20 @@ public class View implements Iview{
     }
 
     @FXML
+    /**
+     * calls the gameInformation function on the Presenter class
+     */
     protected void gameInformation()
     {
-        presenter.gameInformation();
+        presenter.AiPressed();
     }
 
 
-    @FXML
-    protected void inAIClick()
-    {
-    //    presenter.AICLICK();
-    }
-
-
+    /**
+     * checking whether an index is black or not
+     * @param index the index of the button
+     * @return true if black, false if not
+     */
     public boolean isBlack(int index)
     {
         for (Map.Entry<Button, Integer> entry : this.buttonIntegerHashMap.entrySet())
@@ -220,6 +228,11 @@ public class View implements Iview{
         return false;
     }
 
+    /**
+     * checking whether an index is white or not
+     * @param index the index of the button
+     * @return true if white, false if not
+     */
     public boolean isWhite(int index)
     {
         for (Map.Entry<Button, Integer> entry : this.buttonIntegerHashMap.entrySet())

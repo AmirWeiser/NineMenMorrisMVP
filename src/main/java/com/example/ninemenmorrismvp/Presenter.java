@@ -23,6 +23,11 @@ public class Presenter implements Ipresenter{
 
     boolean isAI = false;
 
+    /**
+     * Responsible for the game program. The game is separated into three Phrases. Phrase one for placing pieces, Phrase two for moving pieces, Phrase three for ending the game and MILL for handling mills.
+     * @param btn The button that had pressed
+     * @param index The index of the button
+     */
     public void userClick(Button btn, int index)
     {
         GameState state = board.gameState;
@@ -259,6 +264,9 @@ public class Presenter implements Ipresenter{
 
     }
 
+    /**
+     * Receiving best spot for Phrase one of the game from the AImodel class
+     */
     public void handleAIPhraseOne()
     {
         int AIindex = AImodel.HEURISTIC_FUNCTION_PHRASE_ONE();
@@ -273,6 +281,9 @@ public class Presenter implements Ipresenter{
         }
     }
 
+    /**
+     * Receiving best move option for Phrase two of the game from the AImodel class
+     */
     public void handleAIPhraseTwo()
     {
         int arr [];
@@ -295,6 +306,9 @@ public class Presenter implements Ipresenter{
         }
     }
 
+    /**
+     * Receiving best spot to delete for MILL Phrase of the game from the AImodel class
+     */
     public void handleAIMill()
     {
         int AIindex = AImodel.HEURISTIC_FUNCTION_DELETE();
@@ -309,21 +323,20 @@ public class Presenter implements Ipresenter{
         view.displayMessage("Turn: White");
     }
 
-    public void gameInformation()
+    /**
+     * Activating or deactivating the AI option
+     */
+    public void AiPressed()
     {
-        isAI = true;
-        System.out.println(Long.toBinaryString(board.whitePieces));
-        System.out.println(Long.toBinaryString(board.blackPieces));
-        System.out.println("Player turn: " + this.USER_TURN);
-        System.out.println("Game State: " + board.gameState);
-        System.out.println("last black index: " + this.lastBlackIndex);
-        System.out.println("last white index: " + this.lastWhiteIndex);
-        System.out.println("count black pieces: " + board.countBlackPieces);
-        System.out.println("count white pieces: " + board.countWhitePieces);
-        System.out.println("count black pieces on board: " + board.countBlackPiecesOnBoard);
-        System.out.println("count white pieces on board: " + board.countWhitePiecesOnBoard);
+
+        if (!isAI) isAI = true;
+        else isAI = false;
+
     }
 
+    /**
+     * Restarts the whole game
+     */
     public void newGame()
     {
         board.restart();
@@ -332,6 +345,11 @@ public class Presenter implements Ipresenter{
         USER_TURN = AppConstants.WHITE;
     }
 
+
+    /**
+     * Sets the enemies border color to black if a  mill has formed.
+     * @param color The color of the current player
+     */
     public void setEnemiesBorder(int color)
     {
         for (int i = 0; i < view.buttons.size(); i++)
@@ -363,6 +381,10 @@ public class Presenter implements Ipresenter{
         }
     }
 
+    /**
+     * Removes the enemies red border to original color after a  mill has handled.
+     * @param color The color of the current player
+     */
     public void removeEnemiesBorder(int color)
     {
 

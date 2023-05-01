@@ -76,6 +76,9 @@ public class Board {
     public HashMap<Integer,Integer> connectedMiddles = new LinkedHashMap<>();
 
 
+    /**
+     * Initializes the connectedMiddles LinkedHashMap
+     */
     public void setConnectedMiddlesHashMap()
     {
         connectedMiddles.put(1,9);
@@ -150,6 +153,9 @@ public class Board {
 //
 //    }
 
+    /**
+     * Initializes the Neighbors LinkedHashMap
+     */
     public void setNeighborsHashMap()
     {
         ArrayList<Integer>list0 = new ArrayList<>(Arrays.asList(1,9));
@@ -205,6 +211,12 @@ public class Board {
 
     }
 
+    /**
+     * Checks if the current index is a neighbor of the destination index
+     * @param currIndex The index of the current button
+     * @param destIndex The index of the destination button
+     * @return
+     */
     public boolean isNeighbor(int currIndex, int destIndex)
     {
         if (flag1 == 0)
@@ -229,6 +241,9 @@ public class Board {
         return false;
     }
 
+    /**
+     * Initializes the whiteMills LinkedHashMap
+     */
     public void setWhiteMillList()
     {
         whiteMills.put(hor1, 0);
@@ -249,6 +264,10 @@ public class Board {
         whiteMills.put(ver6, 0);
         whiteMills.put(ver7, 0);
     }
+
+    /**
+     * Initializes the blackMills LinkedHashMap
+     */
     public void setBlackMillList()
     {
         blackMills.put(hor1, 0);
@@ -270,6 +289,9 @@ public class Board {
         blackMills.put(ver7, 0);
     }
 
+    /**
+     * Sets the current game state to one of three option: PHRASE_ONE, PHRASE_TWO, PHRASE_THREE and MILL.
+     */
     public void setGameState()
     {
         if(checkWin()) gameState = GameState.PHRASE_THREE;
@@ -278,6 +300,10 @@ public class Board {
         else gameState = GameState.PHRASE_ONE;
     }
 
+    /**
+     * Checks if a player won
+     * @return true if player won, false otherwise
+     */
     public boolean checkWin()
     {
         if (countWhitePieces == 2 || countBlackPieces == 2) return true;
@@ -285,6 +311,11 @@ public class Board {
         return false;
     }
 
+    /**
+     * Displaying the piece by the index and the color
+     * @param index index of the button the display
+     * @param color color of the current player
+     */
     public void displayPiece(int index, int color)
     {
         if (color == AppConstants.BLACK)
@@ -299,6 +330,11 @@ public class Board {
         setGameState();
     }
 
+    /**
+     * Removing the piece by the index and the color
+     * @param index index of the button the remove
+     * @param color color of the current player
+     */
     public void remove(int index, int color)
     {
         if(color == AppConstants.WHITE)
@@ -317,6 +353,12 @@ public class Board {
     }
 
 
+    /**
+     * Checking if a piece is on an Active mill
+     * @param index index of the button
+     * @param color color of the current player
+     * @return true if index is on mill, false otherwise
+     */
     public boolean isPieceOnMill(int index, int color)
     {
         if (color == AppConstants.BLACK)
@@ -343,6 +385,11 @@ public class Board {
     }
 
 
+    /**
+     * Checking if all enemies pieces is on an Active mills
+     * @param color color of the current player
+     * @return true if all enemies pieces is on an Active mills, false otherwise
+     */
     public boolean checkIfAllEnemyPiecesOnMills(int color) {
         long onMill = 0L;
         if(color == AppConstants.WHITE)
@@ -367,6 +414,11 @@ public class Board {
     }
 
 
+    /**
+     * Checks if an index is occupied
+     * @param index index of the button
+     * @return true if occupied, false otherwise
+     */
     public boolean isOccupied(int index)
     {
         if ((this.whitePieces & (1 << index)) != 0) return true;
@@ -374,6 +426,10 @@ public class Board {
         return false;
     }
 
+    /**
+     * checking if a mill has formed
+     * @return true if a mill has formed, false otherwise
+     */
     public boolean checkMill()
     {
         if (flag == 0)
@@ -402,6 +458,11 @@ public class Board {
         return false;
     }
 
+    /**
+     * if we would place the index button, it checks if it would create a mill.
+     * @param index index of the button
+     * @return true if a mill has formed,m false otherwise
+     */
     public boolean checkMillAI(int index)
     {
 
@@ -420,7 +481,11 @@ public class Board {
     }
 
 
-
+    /**
+     * If we would diaplay the index button, it checks if it would block a white mill
+     * @param index index if the button
+     * @return true if a white mill has blocked, false otherwise
+     */
     public boolean isBlockMillPossible(int index)
     {
         Long whiteTempBoard = this.whitePieces;
@@ -438,6 +503,12 @@ public class Board {
     }
 
 
+    /**
+     * Moves the color piece from the fromIndex to the toIndex
+     * @param fromIndex index of the piece that we want to be moved
+     * @param toIndex index of the button that we want to display
+     * @param color color of the current player
+     */
     public void move(int fromIndex, int toIndex, int color)
     {
         if (color == AppConstants.WHITE) color = AppConstants.BLACK;
@@ -449,6 +520,9 @@ public class Board {
         displayPiece(toIndex, color);
     }
 
+    /**
+     * checks if a mill has changed in the last move. If it did change, it sets the value of the mill to 1, instead of 0
+     */
     public void checkIfMillChanged()
     {
         for (Map.Entry<Integer, Integer> entry : blackMills.entrySet())
@@ -467,6 +541,12 @@ public class Board {
         }
     }
 
+    /**
+     * Checks if the remove index is not occupied
+     * @param index index of the deleted index
+     * @param color color of the current player
+     * @return true if the remove is ok, false otherwise
+     */
     public boolean isRemoveIndexFine(int index, int color)
     {
         if (color == AppConstants.WHITE)
@@ -486,6 +566,12 @@ public class Board {
         return false;
     }
 
+    /**
+     * Moving the fromIndex piece to the toIndex button without worrying if they are neighbors
+     * @param fromIndex the index we want to move
+     * @param toIndex the index of the button that the piece will be displayed on
+     * @param color color of the current player
+     */
     public void flying (int fromIndex, int toIndex, int color)
     {
         if (color == AppConstants.WHITE)
@@ -506,6 +592,9 @@ public class Board {
         }
     }
 
+    /**
+     * restarts all the variables when restarts button is pressed
+     */
     public void restart()
     {
         this.whitePieces = 0b000000000000000000000000;
