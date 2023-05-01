@@ -144,7 +144,7 @@ public class AIModel {
 
     }
 
-    public int getBestRemoveOption_HEURISTIC_FUNCTION()
+    public int HEURISTIC_FUNCTION_DELETE()
     {
         int bestSpot = -1, maxEvaluation = 0;
         HashMap<Integer, Integer> possibleRemovesEvaluation = new LinkedHashMap<>();
@@ -196,37 +196,8 @@ public class AIModel {
 
 
 
-//    public int[] getBestSpotPhraseTwo(View view) {
-//        int[] arr = new int[2];
-//        Random random = new Random();
-//        int index1 = random.nextInt(23);
-//        outerloop:
-//        for (int index = 0; index < 100; index++) {
-//            for (Map.Entry<Button, Integer> entry : view.buttonIntegerHashMap.entrySet()) {
-//                if (entry.getValue() == index1) {
-//                    if (entry.getKey().getStyle().equals("-fx-background-color: black;")) {
-//                        for (Map.Entry<Integer, ArrayList<Integer>> entry1 : this.board.Neighbors.entrySet()) {
-//                            if (entry1.getKey() == index1) {
-//                                for (int j = 0; j < entry1.getValue().size(); j++) {
-//                                    if (!this.board.isOccupied(entry1.getValue().get(j))) {
-//                                        arr[0] = index1;
-//                                        arr[1] = entry1.getValue().get(j);
-//                                        break outerloop;
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//                index1 = random.nextInt(23);
-//            }
-//
-//        }
-//
-//        return arr;
-//    }
 
-    public int[] getBestSpotPhraseTwo_HEURISTIC_FUNCTION()
+    public int[] HEURISTIC_FUNCTION_PHRASE_TWO()
     {
         int[] bestMoves = new int[2];
         int maxEvaluation = -5, evaluation = 0;
@@ -257,15 +228,18 @@ public class AIModel {
             }
         }
 
-        System.out.println("bestMove from index: " + bestMoves[0]);
-        System.out.println("bestMove to index: " + bestMoves[1]);
+        if (isPotentialMillFormation(bestMoves[1]) != 0) System.out.println("isPotentialMillFormation");
+        if (isBlockMillPossible(bestMoves[1]) != 0) System.out.println("isBlockMillPossible");
+        if (isMillActive(bestMoves[0]) != 0) System.out.println("isMillActive");
+        if (isPieceNeighborAndMillNotOccupied(bestMoves[1]) != 0) System.out.println("isPieceNeighborAndMillNotOccupied");
+
         System.out.println("bestMove evaluation: " + maxEvaluation);
         return bestMoves;
 
     }
 
 
-    public int HEURISTIC_FUNCTION()
+    public int HEURISTIC_FUNCTION_PHRASE_ONE()
     {
         int bestSpot = -1, maxEvaluation = -5;
         Random random = new Random();
@@ -300,6 +274,14 @@ public class AIModel {
                 bestSpot = numbers.get(index);
             }
         }
+
+        if (isPotentialMillFormation(bestSpot) != 0) System.out.println("isPotentialMillFormation");
+        if (isBlockMillPossible(bestSpot) != 0) System.out.println("isBlockMillPossible");
+        if (isBlockMiddleMillsPiece(bestSpot) != 0) System.out.println("isBlockMiddleMillsPiece");
+        if (isBetweenConnectedMiils(bestSpot) != 0) System.out.println("isBetweenConnectedMiils");
+        if (connectedMiddles(bestSpot) != 0) System.out.println("connectedMiddles");
+        if (isPieceNeighborAndMillNotOccupied(bestSpot) != 0) System.out.println("isPieceNeighborAndMillNotOccupied");
+        if (isPieceNeighbor(bestSpot) != 0) System.out.println("isPieceNeighbor");
         return bestSpot;
     }
 
@@ -353,8 +335,7 @@ public class AIModel {
         {
             if (this.board.checkMillAI(index))
             {
-                System.out.println("isPotentialMillFormation index: " + index);
-                return 15;
+                return 50;
             }
         }
         return 0;
@@ -366,8 +347,7 @@ public class AIModel {
         {
             if (this.board.isBlockMillPossible(index))
             {
-                System.out.println("isBlockMillPossible index: " + index);
-                return 7;
+                return 30;
             }
         }
         return 0;
@@ -388,7 +368,6 @@ public class AIModel {
                             this.board.blackPieces |= (1 << index);
                             if (this.board.checkMillAI(entry.getValue().get(i)))
                             {
-                                System.out.println("isPieceNeighborAndMillNotOccupied index: " + index);
                                 this.board.blackPieces ^= (1 << index);
                                 return 1;
                             }
@@ -406,7 +385,6 @@ public class AIModel {
                                             this.board.blackPieces |= (1 << index);
                                             if (this.board.checkMillAI(entry1.getValue().get(j)))
                                             {
-                                                System.out.println("isPieceNeighborAndMillNotOccupied index: " + index);
                                                 this.board.blackPieces ^= (1 << index);
                                                 return 1;
                                             }
@@ -434,7 +412,7 @@ public class AIModel {
                 {
                     if (!this.view.isWhite(entry.getValue().get(i))) return 0;
                 }
-                return 5;
+                    return 10;
             }
         }
         return 0;
@@ -450,7 +428,10 @@ public class AIModel {
                 {
                     if (!this.view.isBlack(entry.getValue().get(i))) return 0;
                 }
-                return 4;
+                if (isPieceNeighborAndMillNotOccupied(index) == 1)
+                {
+                    return 7;
+                }
             }
         }
         return 0;
@@ -462,7 +443,7 @@ public class AIModel {
         for (Map.Entry<Integer, Integer> entry: this.board.connectedMiddles.entrySet())
         {
             if ((index == entry.getKey() && this.view.isBlack(entry.getValue()))
-            || (index == entry.getValue() && this.view.isBlack(entry.getKey()))) return 3;
+            || (index == entry.getValue() && this.view.isBlack(entry.getKey()))) return 5;
         }
         return  0;
     }
@@ -476,7 +457,6 @@ public class AIModel {
             {
                 if (this.board.isNeighbor(index, i))
                 {
-                    System.out.println("isPieceNeighbor index: " + index);
                     return 1;
                 }
             }

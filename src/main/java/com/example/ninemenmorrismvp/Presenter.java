@@ -261,7 +261,7 @@ public class Presenter implements Ipresenter{
 
     public void handleAIPhraseOne()
     {
-        int AIindex = AImodel.HEURISTIC_FUNCTION();
+        int AIindex = AImodel.HEURISTIC_FUNCTION_PHRASE_ONE();
         System.out.println("AIindex is: " + AIindex);
         board.displayPiece(AIindex, AppConstants.BLACK);
         for (Map.Entry<Button, Integer> entry : view.buttonIntegerHashMap.entrySet())
@@ -276,7 +276,7 @@ public class Presenter implements Ipresenter{
     public void handleAIPhraseTwo()
     {
         int arr [];
-        arr = AImodel.getBestSpotPhraseTwo_HEURISTIC_FUNCTION();
+        arr = AImodel.HEURISTIC_FUNCTION_PHRASE_TWO();
         int fromAIindex = arr[0];
         int toAIindex = arr[1];
         System.out.println("fromAIindex is: " + fromAIindex);
@@ -297,7 +297,7 @@ public class Presenter implements Ipresenter{
 
     public void handleAIMill()
     {
-        int AIindex = AImodel.getBestRemoveOption_HEURISTIC_FUNCTION();
+        int AIindex = AImodel.HEURISTIC_FUNCTION_DELETE();
         board.remove(AIindex, AppConstants.BLACK);
         for (Map.Entry<Button, Integer> entry : view.buttonIntegerHashMap.entrySet())
         {

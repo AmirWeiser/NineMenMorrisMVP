@@ -20,7 +20,6 @@ public class Board {
     public long whitePieces = 0b000000000000000000000000;
     public long blackPieces = 0b000000000000000000000000;
 
-    public long mill = 0b111;
 
     public int flag = 0;
     public int flag1 = 0;
