@@ -4,6 +4,9 @@ import javafx.scene.control.Button;
 
 import java.util.*;
 
+/**
+ * Responsible for the logic of the AI player
+ */
 public class AIModel {
 
     final Board board;

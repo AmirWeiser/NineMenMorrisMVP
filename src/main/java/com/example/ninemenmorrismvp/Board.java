@@ -4,6 +4,9 @@ import javafx.scene.control.Button;
 
 import java.util.*;
 
+/**
+ * Responsible for the logic of the game
+ */
 public class Board {
 
     int countWhitePieces = 9;

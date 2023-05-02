@@ -4,6 +4,9 @@ import javafx.scene.control.Button;
 
 import java.util.Map;
 
+/**
+ * Responsible for the main program, interacts between the Board (model) class and the View Class
+ */
 public class Presenter implements Ipresenter{
 
     Board board = new Board();

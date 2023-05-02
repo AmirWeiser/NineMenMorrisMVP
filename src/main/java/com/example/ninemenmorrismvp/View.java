@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Responsible for the user interface
+ */
 public class View implements Iview{
 
     Presenter presenter;
@@ -25,20 +28,39 @@ public class View implements Iview{
         this.presenter= new Presenter(this);
     }
     @Override
+
+    /**
+     * displaying the received message on the screen, in the messages side
+     */
     public void displayMessage(String str) {labelID.setText(str);}
 
+    /**
+     * displaying the received message on the screen, in the mode side
+     */
     public void displayMode(String str){modeLabel.setText(str);}
 
     @Override
+    /**
+     * sets the button into white background
+     */
     public void setWhiteBackground(Button b) {b.setStyle("-fx-background-color: white;");}
 
     @Override
+    /**
+     * sets the button into black background
+     */
     public void setBlackBackground(Button b) {b.setStyle("-fx-background-color: black;");}
 
     @Override
+    /**
+     * removes the button's white background
+     */
     public void removeWhiteBackground(Button b) {b.setStyle("");}
 
     @Override
+    /**
+     * removes the button's black background
+     */
     public void removeBlackBackground(Button b) {b.setStyle("");}
 
     @FXML
